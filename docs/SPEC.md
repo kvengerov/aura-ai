@@ -382,8 +382,8 @@ aura-ai/
 ### Stage 1 (MVP - 2-3 months)
 
 - [x] Initialize Nx workspace
-- [ ] Configure Supabase (DB, Auth, RLS)
-- [ ] API: Auth, Clients, Services, Staff, Bookings
+- [x] Configure Supabase (DB, Auth, RLS)
+- [x] API: Auth, Clients, Services, Staff, Bookings
 - [ ] Web: Login, Dashboard, Clients, Calendar
 - [ ] AI chat (basic)
 
