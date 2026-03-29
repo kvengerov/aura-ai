@@ -1,65 +1,65 @@
 # Aura AI
 
-SaaS платформа для управления бизнесом в сфере услуг (фитнес-клубы, салоны, офисы).
+SaaS platform for business management in the service industry (fitness clubs, salons, offices).
 
-## Технологии
+## Technologies
 
 - **Backend:** NestJS + Supabase (PostgreSQL)
 - **Frontend:** Next.js 16
 - **Mobile:** Flutter
 - **AI:** OpenAI API (GPT-4o)
-- **Monorepo:** Nx 18+
+- **Monorepo:** Nx 22.x
 - **Docker:** docker-compose
 
-## Структура проекта
+## Project Structure
 
 ```
 apps/
-├── api/     # NestJS API (порт 4000)
-└── web/     # Next.js Web (порт 3000)
+├── api/     # NestJS API (port 4000)
+└── web/     # Next.js Web (port 3000)
 
-packages/   # Общие пакеты
-libs/       # Доменные библиотеки
-docs/       # Документация
+packages/   # Shared packages
+libs/       # Domain libraries
+docs/       # Documentation
 ```
 
-## Быстрый старт
+## Quick Start
 
-### Установка
+### Installation
 
 ```bash
 npm install
 ```
 
-### Локальная разработка
+### Local Development
 
 ```bash
-# Запустить всё (API + Web)
+# Run everything (API + Web)
 npm run dev
 
-# Только API
+# API only
 npm run dev:api
 
-# Только Web
+# Web only
 npm run dev:web
 ```
 
 ### Docker
 
 ```bash
-# Сборка и запуск
+# Build and run
 npm run docker:dev
 
-# Только запуск
+# Run only
 npm run docker:up
 
-# Остановка
+# Stop
 npm run docker:down
 ```
 
-## Переменные окружения
+## Environment Variables
 
-Скопируйте `.env.example` в `.env` и настройте:
+Copy `.env.example` to `.env` and configure:
 
 ```env
 DATABASE_URL=postgresql://user:password@localhost:5432/aura
@@ -75,14 +75,14 @@ SENDGRID_API_KEY=SG....
 - **API:** http://localhost:4000
 - **Web:** http://localhost:3000
 
-## Скрипты
+## Scripts
 
-| Команда | Описание |
-|---------|----------|
-| `npm run dev` | Запуск dev серверов |
-| `npm run build` | Сборка проекта |
-| `npm run docker:dev` | Запуск в Docker |
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Run dev servers |
+| `npm run build` | Build project |
+| `npm run docker:dev` | Run in Docker |
 
-## Лицензия
+## License
 
 MIT

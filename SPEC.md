@@ -1,56 +1,56 @@
-# Aura AI - SaaS платформа управления бизнесом услуг
+# Aura AI - SaaS Platform for Service Business Management
 
-## Архитектура
+## Architecture
 
 - **Backend:** NestJS + Supabase (PostgreSQL)
 - **Frontend Web:** Next.js 16.2.1
-- **Мобильное:** Flutter
-- **Monorepo:** Nx 18+
+- **Mobile:** Flutter
+- **Monorepo:** Nx 22.x
 - **AI:** OpenAI API (GPT-4o)
 - **Email:** SendGrid
-- **Календарь:** Google Calendar API
+- **Calendar:** Google Calendar API
 
-## Стек
+## Tech Stack
 
-| Компонент | Версия |
-|-----------|--------|
+| Component | Version |
+|-----------|---------|
 | @nestjs/cli | 11.0.16 |
 | @nestjs/core | 11.x |
-| Nx | 18+ |
+| Nx | 22.x |
 | Next.js | 16.2.1 |
 
-## Структура Nx Workspace
+## Nx Workspace Structure
 
 ```
 apps/
-├── api/     # NestJS (порт 4000)
-└── web/     # Next.js (порт 3000)
+├── api/     # NestJS (port 4000)
+└── web/     # Next.js (port 3000)
 
 packages/
-├── shared/       # Общие типы
-└── api-client/   # API клиент
+├── shared/       # Shared types
+└── api-client/  # API client
 
 libs/
-├── ui/           # UI компоненты
-└── data-access/  # Доступ к данным
+├── ui/            # UI components
+└── data-access/  # Data access
 ```
 
 ## API Endpoints
 
-- `/api/v1/auth` - Аутентификация
-- `/api/v1/clients` - Клиенты (CRM)
-- `/api/v1/services` - Услуги
-- `/api/v1/staff` - Персонал
-- `/api/v1/bookings` - Записи
-- `/api/v1/ai` - AI чат
-- `/api/v1/campaigns` - Email рассылки
+- `/api/v1/auth` - Authentication
+- `/api/v1/clients` - Clients (CRM)
+- `/api/v1/services` - Services
+- `/api/v1/staff` - Staff
+- `/api/v1/bookings` - Bookings
+- `/api/v1/ai` - AI chat
+- `/api/v1/campaigns` - Email campaigns
 
-## Стоимость (месяц)
+## Monthly Cost
 
-| Сервис | Стоимость |
-|--------|-----------|
+| Service | Cost |
+|---------|------|
 | Supabase | $0-25 |
 | Vercel | $0-20 |
 | OpenAI | $10-50 |
 | SendGrid | $15 |
-| **Итого** | **$25-110** |
+| **Total** | **$25-110** |

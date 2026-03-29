@@ -1,46 +1,46 @@
-# Aura AI - Техническая спецификация
+# Aura AI - Technical Specification
 
-## 1. Техническая архитектура
+## 1. Technical Architecture
 
-### Стек технологий
+### Tech Stack
 
-| Компонент | Технология |
+| Component | Technology |
 |-----------|------------|
 | Backend API | NestJS |
-| База данных | PostgreSQL (Supabase) |
+| Database | PostgreSQL (Supabase) |
 | Auth | Supabase Auth |
 | Frontend Web | Next.js 16.2.1 |
-| Мобильное | Flutter |
-| Monorepo | Nx 18+ |
+| Mobile | Flutter |
+| Monorepo | Nx 22.x |
 | AI | OpenAI API (GPT-4o) |
 | Email | SendGrid API |
-| Календарь | Google Calendar API |
+| Calendar | Google Calendar API |
 
-### Версии
+### Versions
 
-| Пакет | Версия |
-|-------|--------|
+| Package | Version |
+|---------|---------|
 | @nestjs/cli | 11.0.16 |
 | @nestjs/core | 11.x |
 | @nestjs/common | 11.x |
-| Nx | 18+ |
+| Nx | 22.x |
 | Next.js | 16.2.1 |
 
-### Стоимость (месяц)
+### Monthly Cost
 
-| Сервис | Стоимость |
-|--------|-----------|
+| Service | Cost |
+|---------|------|
 | Supabase | $0-25 |
 | Vercel | $0-20 |
 | OpenAI | $10-50 |
 | SendGrid | $15 |
-| **Итого** | **$25-110** |
+| **Total** | **$25-110** |
 
 ---
 
-## 2. Структура базы данных
+## 2. Database Structure
 
-### Таблицы
+### Tables
 
 #### organizations
 ```sql
@@ -181,7 +181,7 @@ CREATE POLICY "Organization isolation" ON clients
 
 ---
 
-## 3. Спецификация API
+## 3. API Specification
 
 ### API Structure
 
@@ -201,108 +201,108 @@ CREATE POLICY "Organization isolation" ON clients
 
 ### Auth Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| POST | `/auth/register` | Регистрация организации |
-| POST | `/auth/login` | Вход |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| POST | `/auth/register` | Register organization |
+| POST | `/auth/login` | Login |
 | POST | `/auth/oauth/google` | Google OAuth |
-| POST | `/auth/logout` | Выход |
-| GET | `/auth/me` | Текущий пользователь |
+| POST | `/auth/logout` | Logout |
+| GET | `/auth/me` | Current user |
 
 ### Clients Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| GET | `/clients` | Список (пагинация, фильтры) |
-| GET | `/clients/:id` | Детали |
-| POST | `/clients` | Создать |
-| PATCH | `/clients/:id` | Обновить |
-| DELETE | `/clients/:id` | Удалить |
-| GET | `/clients/:id/history` | История посещений |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| GET | `/clients` | List (pagination, filters) |
+| GET | `/clients/:id` | Details |
+| POST | `/clients` | Create |
+| PATCH | `/clients/:id` | Update |
+| DELETE | `/clients/:id` | Delete |
+| GET | `/clients/:id/history` | Visit history |
 
 ### Services Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| GET | `/services` | Список услуг |
-| GET | `/services/:id` | Детали услуги |
-| POST | `/services` | Создать услугу |
-| PATCH | `/services/:id` | Обновить услугу |
-| DELETE | `/services/:id` | Удалить услугу |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| GET | `/services` | List |
+| GET | `/services/:id` | Details |
+| POST | `/services` | Create |
+| PATCH | `/services/:id` | Update |
+| DELETE | `/services/:id` | Delete |
 
 ### Staff Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| GET | `/staff` | Список персонала |
-| GET | `/staff/:id` | Профиль сотрудника |
-| POST | `/staff` | Добавить сотрудника |
-| PATCH | `/staff/:id` | Обновить сотрудника |
-| GET | `/staff/:id/schedule` | График работы |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| GET | `/staff` | List |
+| GET | `/staff/:id` | Profile |
+| POST | `/staff` | Add |
+| PATCH | `/staff/:id` | Update |
+| GET | `/staff/:id/schedule` | Work schedule |
 
 ### Bookings Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| GET | `/bookings` | Список |
-| GET | `/bookings/calendar` | Календарь |
-| GET | `/bookings/:id` | Детали |
-| POST | `/bookings` | Создать |
-| PATCH | `/bookings/:id` | Обновить |
-| DELETE | `/bookings/:id` | Отменить |
-| POST | `/bookings/:id/confirm` | Подтвердить |
-| POST | `/bookings/:id/complete` | Завершить |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| GET | `/bookings` | List |
+| GET | `/bookings/calendar` | Calendar |
+| GET | `/bookings/:id` | Details |
+| POST | `/bookings` | Create |
+| PATCH | `/bookings/:id` | Update |
+| DELETE | `/bookings/:id` | Cancel |
+| POST | `/bookings/:id/confirm` | Confirm |
+| POST | `/bookings/:id/complete` | Complete |
 
 ### AI Chat Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| POST | `/ai/chat` | Чат (SSE streaming) |
-| GET | `/ai/conversations` | История чатов |
-| GET | `/ai/conversations/:id` | Конкретный чат |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| POST | `/ai/chat` | Chat (SSE streaming) |
+| GET | `/ai/conversations` | Chat history |
+| GET | `/ai/conversations/:id` | Specific chat |
 
 ### Campaigns Endpoints
 
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| GET | `/campaigns` | Список рассылок |
-| POST | `/campaigns` | Создать рассылку |
-| POST | `/campaigns/:id/send` | Отправить |
-| GET | `/campaigns/:id/stats` | Статистика |
+| Method | Endpoint | Description |
+|-------|----------|-------------|
+| GET | `/campaigns` | List |
+| POST | `/campaigns` | Create |
+| POST | `/campaigns/:id/send` | Send |
+| GET | `/campaigns/:id/stats` | Statistics |
 
 ---
 
 ## 4. AI Chat Architecture
 
-### Поток
+### Flow
 
 ```
-Пользователь → API → Извлечение интента → Выполнение действия → GPT ответ → SSE
+User → API → Intent Extraction → Action Execution → GPT Response → SSE
 ```
 
-### Интенты
+### Intents
 
-- `create_booking` - создать запись
-- `get_schedule` - показать расписание
-- `get_client_info` - информация о клиенте
-- `general_question` - общие вопросы
+- `create_booking` - create booking
+- `get_schedule` - show schedule
+- `get_client_info` - client info
+- `general_question` - general questions
 
-### Системный промпт
+### System Prompt
 
 ```
-Ты - AI-ассистент для управления услугами (фитнес, салоны, офисы).
-Ты можешь:
-- Записывать клиентов на услуги
-- Показывать расписание
-- Информировать о клиентах
-- Отвечать на вопросы об организации
+You are an AI assistant for service business management (fitness, salons, offices).
+You can:
+- Book clients for services
+- Show schedule
+- Provide client information
+- Answer questions about the organization
 
-Всегда будь вежлив и точен.
+Always be polite and accurate.
 ```
 
 ---
 
-## 5. Структура Nx проекта
+## 5. Nx Project Structure
 
 ```
 aura-ai/
@@ -329,12 +329,12 @@ aura-ai/
 │       └── project.json
 │
 ├── packages/
-│   ├── shared/       # Типы, константы
-│   └── api-client/  # API клиент
+│   ├── shared/       # Types, constants
+│   └── api-client/  # API client
 │
 ├── libs/
-│   ├── ui/           # UI компоненты
-│   └── data-access/  # Доступ к данным
+│   ├── ui/           # UI components
+│   └── data-access/  # Data access
 │
 ├── nx.json
 ├── package.json
@@ -343,7 +343,7 @@ aura-ai/
 
 ---
 
-## 6. Зависимости
+## 6. Dependencies
 
 ### API (NestJS)
 
@@ -380,19 +380,19 @@ aura-ai/
 
 ---
 
-## 7. План разработки
+## 7. Development Plan
 
-### Этап 1 (MVP - 2-3 месяца)
+### Stage 1 (MVP - 2-3 months)
 
-1. Инициализация Nx workspace
-2. Настройка Supabase (БД, Auth, RLS)
+1. Initialize Nx workspace
+2. Configure Supabase (DB, Auth, RLS)
 3. API: Auth, Clients, Services, Staff, Bookings
-4. Web: Логин, Дашборд, Клиенты, Календарь
-5. AI чат (базовый)
+4. Web: Login, Dashboard, Clients, Calendar
+5. AI chat (basic)
 
-### Этап 2
+### Stage 2
 
-1. Flutter мобильное приложение
-2. Email рассылки (SendGrid)
-3. Google Calendar синхронизация
-4. Документооборот
+1. Flutter mobile app
+2. Email campaigns (SendGrid)
+3. Google Calendar sync
+4. Document management
