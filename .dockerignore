@@ -1,0 +1,34 @@
+# Dependencies
+node_modules
+apps/*/node_modules
+
+# Build outputs
+dist
+apps/api/dist
+apps/web/.next
+apps/web/out
+
+# IDE
+.idea
+.vscode
+
+# Git
+.git
+.gitignore
+
+# Docs
+docs
+*.md
+
+# Logs
+*.log
+npm-debug.log*
+
+# Tests
+coverage
+.nyc_output
+
+# Misc
+.DS_Store
+.env
+.env.local

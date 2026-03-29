@@ -1,0 +1,23 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/api/tsconfig.json ./apps/api/
+COPY apps/api/tsconfig.app.json ./apps/api/
+COPY nx.json ./
+
+# Install dependencies only if node_modules doesn't exist
+RUN ls node_modules 2>/dev/null || npm install
+
+COPY apps/api/src ./apps/api/src
+COPY apps/api/webpack.config.js ./apps/api/webpack.config.js
+
+ENV NODE_ENV=development
+ENV SUPABASE_URL=${SUPABASE_URL}
+ENV SUPABASE_KEY=${SUPABASE_KEY}
+
+EXPOSE 4000
+
+CMD ["npx", "nx", "serve", "api"]
