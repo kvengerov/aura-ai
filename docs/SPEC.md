@@ -381,15 +381,15 @@ aura-ai/
 
 ### Stage 1 (MVP - 2-3 months)
 
-1. Initialize Nx workspace
-2. Configure Supabase (DB, Auth, RLS)
-3. API: Auth, Clients, Services, Staff, Bookings
-4. Web: Login, Dashboard, Clients, Calendar
-5. AI chat (basic)
+- [x] 1. Initialize Nx workspace
+- [ ] 2. Configure Supabase (DB, Auth, RLS)
+- [ ] 3. API: Auth, Clients, Services, Staff, Bookings
+- [ ] 4. Web: Login, Dashboard, Clients, Calendar
+- [ ] 5. AI chat (basic)
 
 ### Stage 2
 
-1. Flutter mobile app
-2. Email campaigns (SendGrid)
-3. Google Calendar sync
-4. Document management
+- [ ] 1. Flutter mobile app
+- [ ] 2. Email campaigns (SendGrid)
+- [ ] 3. Google Calendar sync
+- [ ] 4. Document management
