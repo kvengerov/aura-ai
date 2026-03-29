@@ -3,9 +3,9 @@
 ## Architecture
 
 - **Backend:** NestJS + Supabase (PostgreSQL)
-- **Frontend Web:** Next.js 16.2.1
+- **Frontend Web:** Next.js + React
 - **Mobile:** Flutter
-- **Monorepo:** Nx 22.x
+- **Monorepo:** Nx
 - **AI:** OpenAI API (GPT-4o)
 - **Email:** SendGrid
 - **Calendar:** Google Calendar API
@@ -14,10 +14,11 @@
 
 | Component | Version |
 |-----------|---------|
-| @nestjs/cli | 11.0.16 |
-| @nestjs/core | 11.x |
-| Nx | 22.x |
-| Next.js | 16.2.1 |
+| NestJS | 11.1.17 |
+| Nx | 22.6.3  |
+| Next.js | 16.2.1  |
+| React | 19.2.4  |
+| TypeScript | 5.9.3   |
 
 ## Nx Workspace Structure
 

@@ -5,10 +5,10 @@ SaaS platform for business management in the service industry (fitness clubs, sa
 ## Technologies
 
 - **Backend:** NestJS + Supabase (PostgreSQL)
-- **Frontend:** Next.js 16
+- **Frontend:** Next.js + React
 - **Mobile:** Flutter
 - **AI:** OpenAI API (GPT-4o)
-- **Monorepo:** Nx 22.x
+- **Monorepo:** Nx
 - **Docker:** docker-compose
 
 ## Project Structure

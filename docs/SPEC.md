@@ -9,9 +9,9 @@
 | Backend API | NestJS |
 | Database | PostgreSQL (Supabase) |
 | Auth | Supabase Auth |
-| Frontend Web | Next.js 16.2.1 |
+| Frontend Web | Next.js 16.1.7 + React 19.2.4 |
 | Mobile | Flutter |
-| Monorepo | Nx 22.x |
+| Monorepo | Nx 22.6.2 |
 | AI | OpenAI API (GPT-4o) |
 | Email | SendGrid API |
 | Calendar | Google Calendar API |
@@ -20,11 +20,11 @@
 
 | Package | Version |
 |---------|---------|
-| @nestjs/cli | 11.0.16 |
-| @nestjs/core | 11.x |
-| @nestjs/common | 11.x |
-| Nx | 22.x |
-| Next.js | 16.2.1 |
+| NestJS | 11.1.17 |
+| Nx | 22.6.3  |
+| Next.js | 16.2.1  |
+| React | 19.2.4  |
+| TypeScript | 5.9.3   |
 
 ### Monthly Cost
 
@@ -277,7 +277,7 @@ CREATE POLICY "Organization isolation" ON clients
 ### Flow
 
 ```
-User → API → Intent Extraction → Action Execution → GPT Response → SSE
+User -> API -> Intent Extraction -> Action Execution -> GPT Response -> SSE
 ```
 
 ### Intents
@@ -345,36 +345,33 @@ aura-ai/
 
 ## 6. Dependencies
 
+### Root
+
+```json
+{
+  "nx": "22.6.3",
+  "typescript": "5.9.3"
+}
+```
+
 ### API (NestJS)
 
 ```json
 {
-  "@nestjs/common": "^11.0.0",
-  "@nestjs/core": "^11.0.0",
-  "@nestjs/cli": "11.0.16",
-  "@nestjs/platform-express": "^11.0.0",
-  "@nestjs/config": "^3.0.0",
-  "@nestjs/swagger": "^7.0.0",
-  "@supabase/supabase-js": "^2.0.0",
-  "openai": "^4.0.0",
-  "@sendgrid/mail": "^8.0.0",
-  "googleapis": "^130.0.0",
-  "class-validator": "^0.14.0",
-  "class-transformer": "^0.5.0",
-  "passport": "^0.7.0",
-  "passport-jwt": "^4.0.0"
+  "@nestjs/common": "11.1.17",
+  "@nestjs/core": "11.1.17",
+  "reflect-metadata": "0.1.14",
+  "rxjs": "7.8.1"
 }
 ```
 
-### Web (Next.js)
+### Web (Next.js + React)
 
 ```json
 {
   "next": "16.2.1",
-  "react": "^18.0.0",
-  "react-dom": "^18.0.0",
-  "@supabase/supabase-js": "^2.0.0",
-  "zod": "^3.0.0"
+  "react": "19.2.4",
+  "react-dom": "19.2.4"
 }
 ```
 

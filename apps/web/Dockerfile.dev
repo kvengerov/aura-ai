@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY apps/web/package.json ./apps/web/
+COPY apps/web/tsconfig.json ./apps/web/
+COPY nx.json ./
+RUN npm install
+
+COPY apps/web/src ./apps/web/src
+COPY apps/web/public ./apps/web/public
+COPY apps/web/next.config.js ./apps/web/next.config.js
+
+ENV NODE_ENV=development
+
+EXPOSE 3000
+
+CMD ["npx", "nx", "dev", "web"]
