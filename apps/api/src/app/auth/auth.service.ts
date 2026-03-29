@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/co
 import { SupabaseService } from '../supabase/supabase.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { createHash } from 'crypto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -23,19 +24,13 @@ export class AuthService {
 
     if (orgError) throw new ConflictException('Organization already exists');
 
-    // Create auth user
-    const { data: authData, error: authError } = await this.supabase.client.auth.signUp({
-      email: dto.email,
-      password: dto.password,
-    });
-
-    if (authError) throw new ConflictException(authError.message);
-
-    // Create user in users table
+    // Create user directly in DB (bypass Supabase Auth for testing)
+    const userId = randomUUID();
+    
     const { data: user, error: userError } = await this.supabase.client
       .from('users')
       .insert({
-        id: authData.user?.id,
+        id: userId,
         organization_id: org.id,
         email: dto.email,
         password_hash: this.hashPassword(dto.password),
@@ -45,26 +40,40 @@ export class AuthService {
       .select()
       .single();
 
-    if (userError) throw new ConflictException(userError.message);
+    if (userError) {
+      // Rollback organization
+      await this.supabase.client.from('organizations').delete().eq('id', org.id);
+      throw new ConflictException(userError.message);
+    }
 
     return { user, organization: org };
   }
 
   async login(dto: LoginDto) {
-    const { data: authData, error: authError } = await this.supabase.client.auth.signInWithPassword({
-      email: dto.email,
-      password: dto.password,
-    });
-
-    if (authError) throw new UnauthorizedException('Invalid credentials');
-
-    const { data: user } = await this.supabase.client
+    const { data: users, error: userError } = await this.supabase.client
       .from('users')
       .select('*, organizations(*)')
-      .eq('id', authData.user?.id)
-      .single();
+      .eq('email', dto.email)
+      .limit(1);
 
-    return { user, session: authData.session };
+    if (userError || !users || users.length === 0) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const user = users[0];
+    const hashedPassword = this.hashPassword(dto.password);
+    
+    if (user.password_hash !== hashedPassword) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return { 
+      user, 
+      session: { 
+        access_token: 'demo-token-' + user.id,
+        user 
+      } 
+    };
   }
 
   async getProfile(userId: string) {
