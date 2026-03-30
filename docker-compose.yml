@@ -9,8 +9,8 @@ services:
       - "4000:4000"
     environment:
       - NODE_ENV=development
-      - SUPABASE_URL=https://[REDACTED].supabase.co
-      - SUPABASE_KEY=[REDACTED]
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
     volumes:
       - ./apps/api/src:/app/apps/api/src
     restart: unless-stopped
