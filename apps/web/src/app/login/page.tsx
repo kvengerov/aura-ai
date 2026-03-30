@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useAuthApi } from '@/hooks/useAuthApi';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,7 +12,8 @@ export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const [orgName, setOrgName] = useState('');
   const [name, setName] = useState('');
-  const { login } = useAuth();
+  const { login: contextLogin } = useAuth();
+  const { register } = useAuthApi();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,17 +22,10 @@ export default function LoginPage() {
 
     try {
       if (isRegister) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, organizationName: orgName, name }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Registration failed');
-        // Auto login after register
-        await login(email, password);
+        await register({ email, password, organizationName: orgName, name });
+        await contextLogin(email, password);
       } else {
-        await login(email, password);
+        await contextLogin(email, password);
       }
       router.push('/dashboard');
     } catch (err: any) {

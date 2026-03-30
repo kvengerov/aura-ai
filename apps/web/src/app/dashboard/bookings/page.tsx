@@ -1,41 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-
-type Booking = {
-  id: string;
-  date_time: string;
-  status: string;
-  clients: { name: string };
-  services: { name: string };
-  staff: { role: string };
-};
+import { useBookings } from '@/hooks/useBookings';
 
 export default function BookingsPage() {
   const { user } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { bookings, loading, fetchBookings } = useBookings();
 
   useEffect(() => {
     if (user?.organization_id) {
-      fetchBookings();
+      fetchBookings(user.organization_id).catch(console.error);
     }
   }, [user]);
-
-  const fetchBookings = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/bookings`, {
-        headers: { 'x-organization-id': user?.organization_id || '' },
-      });
-      const data = await res.json();
-      setBookings(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {

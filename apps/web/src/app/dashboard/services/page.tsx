@@ -2,62 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-
-type Service = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  duration_min: number;
-  is_active: boolean;
-};
+import { useServices } from '@/hooks/useServices';
 
 export default function ServicesPage() {
   const { user } = useAuth();
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { services, loading, fetchServices, createService } = useServices();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', category: '', price: '', duration_min: '30' });
 
   useEffect(() => {
     if (user?.organization_id) {
-      fetchServices();
+      fetchServices(user.organization_id).catch(console.error);
     }
   }, [user]);
 
-  const fetchServices = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/services`, {
-        headers: { 'x-organization-id': user?.organization_id || '' },
-      });
-      const data = await res.json();
-      setServices(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.organization_id) return;
+    
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/services`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-organization-id': user?.organization_id || '' 
-        },
-        body: JSON.stringify({ ...formData, price: parseFloat(formData.price), duration_min: parseInt(formData.duration_min) }),
+      await createService(user.organization_id, {
+        ...formData,
+        price: parseFloat(formData.price) || 0,
+        duration_min: parseInt(formData.duration_min) || 30,
       });
-      if (res.ok) {
-        setFormData({ name: '', description: '', category: '', price: '', duration_min: '30' });
-        setShowForm(false);
-        fetchServices();
-      }
-    } catch (e) {
-      console.error(e);
+      setFormData({ name: '', description: '', category: '', price: '', duration_min: '30' });
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
     }
   };
 

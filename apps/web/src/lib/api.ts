@@ -1,100 +1,44 @@
-import { API_URL } from './supabase';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
-const getHeaders = (organizationId?: string) => {
-  const headers: Record<string, string> = {
+interface RequestOptions extends RequestInit {
+  organizationId?: string;
+}
+
+export async function apiClient<T>(
+  endpoint: string,
+  options: RequestOptions = {}
+): Promise<T> {
+  const { organizationId, ...fetchOptions } = options;
+
+  const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    ...(organizationId && { 'x-organization-id': organizationId }),
+    ...fetchOptions.headers,
   };
-  if (organizationId) {
-    headers['x-organization-id'] = organizationId;
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...fetchOptions,
+    headers,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message || 'Request failed');
   }
-  return headers;
-};
 
-export const authApi = {
-  register: async (data: { email: string; password: string; organizationName: string; name?: string }) => {
-    const res = await fetch(`${API_URL}/v1/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
+  return response.json();
+}
 
-  login: async (email: string, password: string) => {
-    const res = await fetch(`${API_URL}/v1/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    return res.json();
-  },
-};
+export const api = {
+  get: <T>(endpoint: string, options?: RequestOptions) =>
+    apiClient<T>(endpoint, { ...options, method: 'GET' }),
 
-export const clientsApi = {
-  getAll: async (organizationId: string) => {
-    const res = await fetch(`${API_URL}/v1/clients`, {
-      headers: getHeaders(organizationId),
-    });
-    return res.json();
-  },
+  post: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
+    apiClient<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
 
-  create: async (organizationId: string, data: any) => {
-    const res = await fetch(`${API_URL}/v1/clients`, {
-      method: 'POST',
-      headers: getHeaders(organizationId),
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
+  patch: <T>(endpoint: string, body?: unknown, options?: RequestOptions) =>
+    apiClient<T>(endpoint, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
 
-  update: async (organizationId: string, id: string, data: any) => {
-    const res = await fetch(`${API_URL}/v1/clients/${id}`, {
-      method: 'PATCH',
-      headers: getHeaders(organizationId),
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
-
-  delete: async (organizationId: string, id: string) => {
-    const res = await fetch(`${API_URL}/v1/clients/${id}`, {
-      method: 'DELETE',
-      headers: getHeaders(organizationId),
-    });
-    return res.json();
-  },
-};
-
-export const servicesApi = {
-  getAll: async (organizationId: string) => {
-    const res = await fetch(`${API_URL}/v1/services`, {
-      headers: getHeaders(organizationId),
-    });
-    return res.json();
-  },
-};
-
-export const bookingsApi = {
-  getAll: async (organizationId: string) => {
-    const res = await fetch(`${API_URL}/v1/bookings`, {
-      headers: getHeaders(organizationId),
-    });
-    return res.json();
-  },
-
-  getCalendar: async (organizationId: string, start: string, end: string) => {
-    const res = await fetch(`${API_URL}/v1/bookings/calendar?start=${start}&end=${end}`, {
-      headers: getHeaders(organizationId),
-    });
-    return res.json();
-  },
-
-  create: async (organizationId: string, data: any) => {
-    const res = await fetch(`${API_URL}/v1/bookings`, {
-      method: 'POST',
-      headers: getHeaders(organizationId),
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
+  delete: <T>(endpoint: string, options?: RequestOptions) =>
+    apiClient<T>(endpoint, { ...options, method: 'DELETE' }),
 };

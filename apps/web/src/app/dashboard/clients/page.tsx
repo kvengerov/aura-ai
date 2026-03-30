@@ -2,75 +2,39 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-
-type Client = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  notes: string;
-  total_visits: number;
-  created_at: string;
-};
+import { useClients } from '@/hooks/useClients';
 
 export default function ClientsPage() {
   const { user } = useAuth();
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { clients, loading, fetchClients, createClient, deleteClient } = useClients();
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', notes: '' });
 
   useEffect(() => {
     if (user?.organization_id) {
-      fetchClients();
+      fetchClients(user.organization_id).catch(console.error);
     }
   }, [user]);
 
-  const fetchClients = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/clients`, {
-        headers: { 'x-organization-id': user?.organization_id || '' },
-      });
-      const data = await res.json();
-      setClients(Array.isArray(data) ? data : []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.organization_id) return;
+    
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/clients`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-organization-id': user?.organization_id || '' 
-        },
-        body: JSON.stringify(formData),
-      });
-      if (res.ok) {
-        setFormData({ name: '', email: '', phone: '', notes: '' });
-        setShowForm(false);
-        fetchClients();
-      }
-    } catch (e) {
-      console.error(e);
+      await createClient(user.organization_id, formData);
+      setFormData({ name: '', email: '', phone: '', notes: '' });
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this client?')) return;
+    if (!confirm('Delete this client?') || !user?.organization_id) return;
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/clients/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-organization-id': user?.organization_id || '' },
-      });
-      fetchClients();
-    } catch (e) {
-      console.error(e);
+      await deleteClient(user.organization_id, id);
+    } catch (err) {
+      console.error(err);
     }
   };
 

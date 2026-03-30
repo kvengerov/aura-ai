@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { api } from '@/lib/api';
+import { logger } from '@/lib/logger';
 
 type User = {
   id: string;
@@ -33,26 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://api:4000'}/api/v1/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Invalid credentials');
-    }
-
-    const data = await response.json();
-    setUser(data.user);
-    localStorage.setItem('aura_user', JSON.stringify(data.user));
-    localStorage.setItem('aura_token', data.session.access_token);
+    const response = await api.post<{ user: User; session: { access_token: string } }>('/v1/auth/login', { email, password });
+    setUser(response.user);
+    localStorage.setItem('aura_user', JSON.stringify(response.user));
+    localStorage.setItem('aura_token', response.session.access_token);
+    logger.info('User logged in via AuthContext', { userId: response.user.id });
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('aura_user');
     localStorage.removeItem('aura_token');
+    logger.info('User logged out');
   };
 
   return (
