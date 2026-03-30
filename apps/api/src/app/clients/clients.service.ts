@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
+import { TABLES, COLUMNS, ERROR_MESSAGES } from '../config/constants';
 
 @Injectable()
 export class ClientsService {
@@ -8,10 +9,10 @@ export class ClientsService {
 
   async findAll(organizationId: string) {
     const { data, error } = await this.supabase.client
-      .from('clients')
+      .from(TABLES.CLIENTS)
       .select('*')
-      .eq('organization_id', organizationId)
-      .order('created_at', { ascending: false });
+      .eq(COLUMNS.ORGANIZATION_ID, organizationId)
+      .order(COLUMNS.CREATED_AT, { ascending: false });
     
     if (error) throw new Error(error.message);
     return data;
@@ -19,20 +20,20 @@ export class ClientsService {
 
   async findOne(id: string, organizationId: string) {
     const { data, error } = await this.supabase.client
-      .from('clients')
+      .from(TABLES.CLIENTS)
       .select('*')
-      .eq('id', id)
-      .eq('organization_id', organizationId)
+      .eq(COLUMNS.ID, id)
+      .eq(COLUMNS.ORGANIZATION_ID, organizationId)
       .single();
     
-    if (error) throw new NotFoundException('Client not found');
+    if (error) throw new NotFoundException(ERROR_MESSAGES.NOT_FOUND.CLIENT);
     return data;
   }
 
   async create(organizationId: string, dto: CreateClientDto) {
     const { data, error } = await this.supabase.client
-      .from('clients')
-      .insert({ ...dto, organization_id: organizationId })
+      .from(TABLES.CLIENTS)
+      .insert({ ...dto, [COLUMNS.ORGANIZATION_ID]: organizationId })
       .select()
       .single();
     
@@ -42,10 +43,10 @@ export class ClientsService {
 
   async update(id: string, organizationId: string, dto: UpdateClientDto) {
     const { data, error } = await this.supabase.client
-      .from('clients')
+      .from(TABLES.CLIENTS)
       .update(dto)
-      .eq('id', id)
-      .eq('organization_id', organizationId)
+      .eq(COLUMNS.ID, id)
+      .eq(COLUMNS.ORGANIZATION_ID, organizationId)
       .select()
       .single();
     
@@ -55,10 +56,10 @@ export class ClientsService {
 
   async remove(id: string, organizationId: string) {
     const { error } = await this.supabase.client
-      .from('clients')
+      .from(TABLES.CLIENTS)
       .delete()
-      .eq('id', id)
-      .eq('organization_id', organizationId);
+      .eq(COLUMNS.ID, id)
+      .eq(COLUMNS.ORGANIZATION_ID, organizationId);
     
     if (error) throw new Error(error.message);
     return { success: true };

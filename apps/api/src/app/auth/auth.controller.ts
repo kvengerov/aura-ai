@@ -2,6 +2,7 @@ import { Controller, Post, Get, Body, Headers, UnauthorizedException } from '@ne
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { SupabaseService } from '../supabase/supabase.service';
+import { HEADERS, AUTH_ROUTES } from '../config/constants';
 
 @Controller('v1/auth')
 export class AuthController {
@@ -10,18 +11,18 @@ export class AuthController {
     private supabase: SupabaseService,
   ) {}
 
-  @Post('register')
+  @Post(AUTH_ROUTES.REGISTER)
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
-  @Post('login')
+  @Post(AUTH_ROUTES.LOGIN)
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
-  @Get('me')
-  async getProfile(@Headers('authorization') authHeader: string) {
+  @Get(AUTH_ROUTES.ME)
+  async getProfile(@Headers(HEADERS.AUTHORIZATION) authHeader: string) {
     if (!authHeader) throw new UnauthorizedException('No token');
     
     const token = authHeader.replace('Bearer ', '');

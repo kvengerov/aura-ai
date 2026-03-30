@@ -3,6 +3,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { createHash } from 'crypto';
 import { randomUUID } from 'crypto';
+import { TABLES, COLUMNS, ERROR_MESSAGES, ROLES, TOKEN_PREFIX } from '../config/constants';
 
 @Injectable()
 export class AuthService {
@@ -15,34 +16,31 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const slug = dto.organizationSlug || dto.organizationName.toLowerCase().replace(/\s+/g, '-');
 
-    // Create organization
     const { data: org, error: orgError } = await this.supabase.client
-      .from('organizations')
-      .insert({ name: dto.organizationName, slug })
+      .from(TABLES.ORGANIZATIONS)
+      .insert({ [COLUMNS.NAME]: dto.organizationName, [COLUMNS.SLUG]: slug })
       .select()
       .single();
 
-    if (orgError) throw new ConflictException('Organization already exists');
+    if (orgError) throw new ConflictException(ERROR_MESSAGES.AUTH.ORGANIZATION_EXISTS);
 
-    // Create user directly in DB (bypass Supabase Auth for testing)
     const userId = randomUUID();
     
     const { data: user, error: userError } = await this.supabase.client
-      .from('users')
+      .from(TABLES.USERS)
       .insert({
-        id: userId,
-        organization_id: org.id,
-        email: dto.email,
-        password_hash: this.hashPassword(dto.password),
-        role: 'owner',
-        name: dto.name || dto.email.split('@')[0],
+        [COLUMNS.ID]: userId,
+        [COLUMNS.ORGANIZATION_ID]: org[COLUMNS.ID],
+        [COLUMNS.EMAIL]: dto.email,
+        [COLUMNS.PASSWORD_HASH]: this.hashPassword(dto.password),
+        [COLUMNS.ROLE]: ROLES.OWNER,
+        [COLUMNS.NAME]: dto.name || dto.email.split('@')[0],
       })
       .select()
       .single();
 
     if (userError) {
-      // Rollback organization
-      await this.supabase.client.from('organizations').delete().eq('id', org.id);
+      await this.supabase.client.from(TABLES.ORGANIZATIONS).delete().eq(COLUMNS.ID, org[COLUMNS.ID]);
       throw new ConflictException(userError.message);
     }
 
@@ -51,26 +49,26 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const { data: users, error: userError } = await this.supabase.client
-      .from('users')
-      .select('*, organizations(*)')
-      .eq('email', dto.email)
+      .from(TABLES.USERS)
+      .select(`*, ${TABLES.ORGANIZATIONS}(*)`)
+      .eq(COLUMNS.EMAIL, dto.email)
       .limit(1);
 
     if (userError || !users || users.length === 0) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
 
     const user = users[0];
     const hashedPassword = this.hashPassword(dto.password);
     
-    if (user.password_hash !== hashedPassword) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (user[COLUMNS.PASSWORD_HASH] !== hashedPassword) {
+      throw new UnauthorizedException(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
 
     return { 
       user, 
       session: { 
-        access_token: 'demo-token-' + user.id,
+        access_token: TOKEN_PREFIX + user[COLUMNS.ID],
         user 
       } 
     };
@@ -78,9 +76,9 @@ export class AuthService {
 
   async getProfile(userId: string) {
     const { data: user } = await this.supabase.client
-      .from('users')
-      .select('*, organizations(*)')
-      .eq('id', userId)
+      .from(TABLES.USERS)
+      .select(`*, ${TABLES.ORGANIZATIONS}(*)`)
+      .eq(COLUMNS.ID, userId)
       .single();
 
     return user;

@@ -51,7 +51,21 @@ export const COLUMNS = {
 
 export const HEADERS = {
   ORGANIZATION_ID: 'x-organization-id',
+  AUTHORIZATION: 'authorization',
 } as const;
+
+export const QUERY_PARAMS = {
+  START: 'start',
+  END: 'end',
+} as const;
+
+export const AUTH_ROUTES = {
+  REGISTER: 'register',
+  LOGIN: 'login',
+  ME: 'me',
+} as const;
+
+export const TOKEN_PREFIX = 'demo-token-';
 
 export const ERROR_MESSAGES = {
   NOT_FOUND: {
